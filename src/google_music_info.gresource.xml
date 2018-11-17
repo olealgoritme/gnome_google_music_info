@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/Google_Music_Info">
+    <file>google_music_info-window.ui</file>
+  </gresource>
+</gresources>

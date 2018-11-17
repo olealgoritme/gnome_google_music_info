@@ -1,0 +1,7 @@
+data/org.gnome.Google_Music_Info.desktop.in
+data/org.gnome.Google_Music_Info.appdata.xml.in
+data/org.gnome.Google_Music_Info.gschema.xml
+src/google_music_info-window.ui
+src/main.c
+src/google_music_info-window.c
+

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="google_music_info">
+	<schema id="org.gnome.Google_Music_Info" path="/org/gnome/Google_Music_Info/">
+	</schema>
+</schemalist>

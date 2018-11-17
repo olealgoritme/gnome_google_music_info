@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=google_music_info
+Exec=google_music_info
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true
