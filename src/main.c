@@ -21,18 +21,27 @@
 #include <gio/gio.h>
 #include <string.h>
 
-
 #include "google_music_info-config.h"
 #include "google_music_info-window.h"
 
+static GtkWindow *window;
 static GFile *file;
-static GFileMonitor *mon;
+static GFileMonitor* mon;
 static GMainLoop *gMainLoop;
 static GtkApplication *gApp;
 
 static char* FILE_PATH = "/home/xuw/.config/Google Play Music Desktop Player/json_store/playback.json";
 
-static char * decode (GFileMonitorEvent event) {
+static GtkWindow *get_active_window() {
+  return gtk_application_get_active_window(gApp);
+}
+
+static void set_title(gchar *title) {
+  gtk_window_set_title(get_active_window(), title);
+}
+
+
+static char *decode(GFileMonitorEvent event) {
   
   char *fmt = g_malloc0 (1024);
   int caret = 0;
@@ -73,13 +82,13 @@ static void on_file_changed (GFileMonitor *mon, GFile *file, GFileMonitorEvent e
               g_file_get_parse_name(file),
               fn(file),
               udata);
-  
+
     FILE *fp;
-    char *line = NULL;
-    char *artist = NULL, *title = NULL;
+    gchar *line = NULL;
+    gchar *artist = NULL, *title = NULL;
     size_t len = 0;
     ssize_t read;
-  
+
     fp = fopen(FILE_PATH, "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
@@ -88,12 +97,17 @@ static void on_file_changed (GFileMonitor *mon, GFile *file, GFileMonitorEvent e
     while ((read = getline(&line, &len, fp)) != -1) {
         
       if(strstr(line, "title") && title == NULL) {
-          title = line;
-      } else if (strstr(line, "artist") && artist == NULL) {    
-          artist = line;
+            title = line;
+
+
+        printf("Title: %s", title);
+      } else if (strstr(line, "artist") && artist == NULL) {
+            artist = line;
+            printf("Artist: %s", artist);
       }                                                                          
     }
-    printf("Artist: %s\n Title: %s\n", artist, title);                                                                                                        
+
+    //printf("Artist: %s\n Title: %s\n", artist, title);
     
     fclose(fp);
     g_free(line);
@@ -102,12 +116,12 @@ static void on_file_changed (GFileMonitor *mon, GFile *file, GFileMonitorEvent e
   g_free (msg);
 }
 
+
 static void on_gtk_activate (GtkApplication *gApp) {
 	
-  GtkWindow *window;
 	g_assert (GTK_IS_APPLICATION (gApp));
 	
-  window = gtk_application_get_active_window (gApp);
+  window = get_active_window();
 	
   if (window == NULL)
 		window = g_object_new (GOOGLE_MUSIC_INFO_TYPE_WINDOW,
@@ -116,9 +130,10 @@ static void on_gtk_activate (GtkApplication *gApp) {
 		                       "default-height", 300,
 		                       NULL);
 
-  /* deprecated, should use gtk_widget_set_opacity() instead. zZzz neger. */
-  gtk_window_set_opacity (window, 0.15);
+
+  gtk_window_set_opacity (window, 0.3);
   gtk_window_present (window);
+
 
 }
 
@@ -127,9 +142,7 @@ int main (int argc, char *argv[]) {
  
   int ret;
   
-  
-  
-  file = g_file_new_for_path (FILE_PATH);  
+  file = g_file_new_for_path (FILE_PATH);
   g_assert (file != NULL);
   
   mon = g_file_monitor (file, G_FILE_MONITOR_SEND_MOVED, NULL, NULL);
